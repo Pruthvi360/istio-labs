@@ -58,3 +58,44 @@ curl -L https://istio.io/downloadIstio | sh -
    ```
    kubectl get svc istio-ingressgateway -n istio-system
    ```
+
+**Note:** If the EXTERNAL-IP value is set, your environment has an external load balancer that you can use for the ingress gateway. If the EXTERNAL-IP value is <none> (or perpetually <pending>), your environment does not provide an external load balancer for the ingress gateway.
+
+# MetalLB for External IP assignment
+
+1. Set **strictARP: false** to **strictARP: true** in **kube-proxy** in kube-system namespace
+   **see what changes would be made, returns nonzero returncode if different**
+   ```
+   kubectl get configmap kube-proxy -n kube-system -o yaml | \
+   sed -e "s/strictARP: false/strictARP: true/" | \
+   kubectl diff -f - -n kube-system
+   ```
+   **actually apply the changes, returns nonzero returncode on errors only**
+   ```
+   kubectl get configmap kube-proxy -n kube-system -o yaml | \
+   sed -e "s/strictARP: false/strictARP: true/" | \
+   kubectl apply -f - -n kube-system
+   ```
+2. Installation By Manifest
+   ```
+   kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
+   ```
+3. Assign IP ranges to External Loadbalancer
+   ```
+   nano ip-allocation.yml
+   ```
+   ```
+   apiVersion: metallb.io/v1beta1
+   kind: IPAddressPool
+   metadata:
+     name: first-pool
+     namespace: metallb-system
+   spec:
+     addresses:
+        #- 192.168.0.0/24  or
+        - 192.168.0.230-192.168.0.254
+   ```
+5. Create IP Pool
+   ```
+   kubectl apply -f ip-allocation.yml
+   ```
