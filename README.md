@@ -99,3 +99,28 @@ curl -L https://istio.io/downloadIstio | sh -
    ```
    kubectl apply -f ip-allocation.yml
    ```
+6. Verify the External IP assignment
+   ```
+   kubectl get svc istio-ingressgateway -n istio-system
+   ```
+
+# Validating istio-ingress works
+
+1. To export ingress external ip and port
+   ```
+   export INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].port}')
+   export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].port}')
+   ```
+2. Set Gateway URL
+   ```
+   export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+   ```
+3. Ensure an IP address and port were successfully assigned to the environment variable:
+   ```
+   echo "$GATEWAY_URL"
+   ```
+4. Verify external access
+   ```
+   echo "http://$GATEWAY_URL/productpage"
+   ```
