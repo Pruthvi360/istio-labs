@@ -54,4 +54,7 @@ curl -L https://istio.io/downloadIstio | sh -
    ```
    kubectl get gateway
    ```
-
+4. Execute the following command to determine if your Kubernetes cluster is running in an environment that supports external load balancers
+   ```
+   kubectl get svc istio-ingressgateway -n istio-system
+   ```
