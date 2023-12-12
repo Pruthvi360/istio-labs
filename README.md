@@ -124,3 +124,54 @@ curl -L https://istio.io/downloadIstio | sh -
    ```
    echo "http://$GATEWAY_URL/productpage"
    ```
+
+# Destination Rules and Define the service versions
+
+1. Istio uses subsets, in destination rules, to define versions of a service. Run the following command to create default destination rules for 
+   the Bookinfo services:
+   ```
+   kubectl apply -f samples/bookinfo/networking/destination-rule-all.yaml
+   ```
+2. You can display the destination rules with the following command:
+   ```
+   kubectl get destinationrules -o yaml
+   ```
+
+# View the dashboard for monitoring
+
+Istio integrates with several different telemetry applications. These can help you gain an understanding of the structure of your service mesh, display the topology of the mesh, and analyze the health of your mesh.
+
+**Use the following instructions to deploy the Kiali dashboard, along with Prometheus, Grafana, and Jaeger.**
+1. Install Kiali and the other addons and wait for them to be deployed.
+   ```
+   kubectl apply -f samples/addons
+   kubectl rollout status deployment/kiali -n istio-system
+   ```
+2. Access the Kiali dashboard.
+   ```
+   istioctl dashboard kiali
+   ```
+3. In the left navigation menu, select Graph and in the Namespace drop down, select default.
+   
+   ![image](https://github.com/Pruthvi360/istio-labs/assets/107435692/66a732c1-387c-4873-a429-41c17c0c67ae)
+
+5. To send a 100 requests to the productpage service, use the following command:
+   ```
+   for i in $(seq 1 100); do curl -s -o /dev/null "http://$GATEWAY_URL/productpage"; done
+   ```
+
+# Clean UP
+
+1. The Istio uninstall deletes the RBAC permissions and all resources hierarchically under the istio-system namespace. It is safe to ignore         errors for non-existent resources because they may have been deleted hierarchically.
+   ```
+   kubectl delete -f samples/addons
+   istioctl uninstall -y --purge
+   ```
+2. The istio-system namespace is not removed by default. If no longer needed, use the following command to remove it:
+   ```
+   kubectl delete namespace istio-system
+   ```
+3. The label to instruct Istio to automatically inject Envoy sidecar proxies is not removed by default. If no longer needed, use the following      command to remove it:
+   ```
+   kubectl label namespace default istio-injection-
+   ```
