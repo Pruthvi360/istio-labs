@@ -50,7 +50,10 @@ kubectl exec "$(kubectl get pod -l app=ratings -o jsonpath='{.items[0].metadata.
    ```
 2. Ensure that there are no issues with the configuration:
    ```
+   istioctl analyze
+   ```
+3. Confirm the gateway has been created:
+   ```
+   kubectl get gateway
    ```
 
-
-```
