@@ -3,11 +3,11 @@
 ```
 curl -L https://istio.io/downloadIstio | sh -
 ```
-**Move to the Istio package directory**
-```
-cd istio-1.20.0
-```
-**Add the istioctl client to your path (Linux or macOS):**
+1. Move to the Istio package directory**
+   ```
+   cd istio-1.20.0
+   ```
+2. Add the istioctl client to your path (Linux or macOS):**
 ```
 export PATH=$PWD/bin:$PATH
 ```
