@@ -23,11 +23,10 @@ curl -L https://istio.io/downloadIstio | sh -
    ```
    kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
    ```
-# If you disabled automatic sidecar injection during installation and rely on manual sidecar injection, use the istioctl kube-inject command to modify the bookinfo.yaml file before deploying your application.
-
-```
-kubectl apply -f <(istioctl kube-inject -f samples/bookinfo/platform/kube/bookinfo.yaml)
-```
+**If you disabled automatic sidecar injection during installation and rely on manual sidecar injection, use the istioctl kube-inject command to modify the bookinfo.yaml file before deploying your application.**
+   ```
+   kubectl apply -f <(istioctl kube-inject -f samples/bookinfo/platform/kube/bookinfo.yaml)
+   ```
 
 6. The application will start. As each pod becomes ready, the Istio sidecar will be deployed along with it.**
    ```
